@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Gen AI Documentation - Hosted by Naseeha</title>
+<style>
+body { font-family: Arial; padding: 20px; background: #f4f4f4; }
+.container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
+h1 { color: #4b0082; }
+code { background: #eee; padding: 5px; display:block; white-space: pre-wrap; border-radius:5px; }
+.section { margin-bottom: 30px; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Gen AI Documentation</h1>
+<h3>Hosted by: Naseeha</h3>
+
+<div class="section">
+<h2>1. Story Generation (Groq API)</h2>
+<code>
+import requests
+
+url = "https://api.groq.com/openai/v1/chat/completions"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+data = {
+    "model": "llama-3.1-8b-instant",
+    "messages": [{"role": "user", "content": "Write a short story about a robot learning emotions."}]
+}
+
+response = requests.post(url, json=data, headers=headers)
+print(response.json()["choices"][0]["message"]["content"])
+</code>
+</div>
+
+<div class="section">
+<h2>2. Image Generation (Groq API)</h2>
+<code>
+import requests
+
+url = "https://api.groq.com/openai/v1/images/generations"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+data = {
+    "model": "whisperless-image-1",
+    "prompt": "A futuristic city floating in the clouds"
+}
+
+response = requests.post(url, json=data, headers=headers)
+print(response.json())
+</code>
+</div>
+
+</div>
+</body>
+</html>
