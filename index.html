@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Gen AI Documentation - Hosted by Naseeha</title>
+</head>
+<body>
+    <h1>Gen AI Documentation</h1>
+    <p><strong>Hosted by:</strong> Naseeha</p>
+
+    <h2>1. Story Generation (Simple Groq API Code)</h2>
+    <pre>
+import requests
+
+url = "https://api.groq.com/openai/v1/chat/completions"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+
+data = {
+    "model": "llama-3.1-8b-instant",
+    "messages": [{"role": "user", "content": "Write a short story"}]
+}
+
+response = requests.post(url, json=data, headers=headers)
+print(response.json()["choices"][0]["message"]["content"])
+    </pre>
+
+    <h2>2. Image Generation Code</h2>
+    <pre>
+import requests
+
+url = "https://api.groq.com/openai/v1/images/generations"
+headers = {"Authorization": "Bearer YOUR_API_KEY"}
+
+data = {"model": "llama-3.2-11b-vision-preview", "prompt": "A cute baby elephant"}
+
+response = requests.post(url, json=data, headers=headers)
+print(response.json())
+    </pre>
+
+    <h2>3. Text Explanation</h2>
+    <p>This page explains the use of URL, headers, POST, response, JSON, roles, and content in API calls.</p>
+</body>
+</html>
