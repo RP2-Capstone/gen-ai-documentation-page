@@ -3,41 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <title>Gen AI Documentation - Hosted by Naseeha</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #f7f7f7;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        pre {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+        .section {
+            background: #fff;
+            padding: 25px;
+            margin-bottom: 40px;
+            border-radius: 12px;
+            box-shadow: 0px 6px 14px rgba(0,0,0,0.15);
+        }
+    </style>
 </head>
-<body>
-    <h1>Gen AI Documentation</h1>
-    <p><strong>Hosted by:</strong> Naseeha</p>
 
-    <h2>1. Story Generation (Simple Groq API Code)</h2>
-    <pre>
+<body>
+
+<h1>🚀 Gen AI Documentation</h1>
+<h3>Hosted by: <b>Naseeha</b></h3>
+<p>This page contains simple, copy-friendly AI code examples for students.</p>
+
+
+
+<!-- ------------------------------------------------------ -->
+<!-- SECTION 1: STORY GENERATION PYTHON CODE -->
+<!-- ------------------------------------------------------ -->
+
+<div class="section">
+<h2>1️⃣ Story Generation (Python + Groq API)</h2>
+
+<pre><code>
 import requests
 
+api_key = "YOUR_GROQ_API_KEY"
+
 url = "https://api.groq.com/openai/v1/chat/completions"
-headers = {"Authorization": "Bearer YOUR_API_KEY"}
+
+prompt = "Write a short story about a lost puppy that finds a new home."
 
 data = {
     "model": "llama-3.1-8b-instant",
-    "messages": [{"role": "user", "content": "Write a short story"}]
+    "messages": [
+        {"role": "user", "content": prompt}
+    ]
+}
+
+headers = {
+    "Authorization": f"Bearer {api_key}",
+    "Content-Type": "application/json"
 }
 
 response = requests.post(url, json=data, headers=headers)
-print(response.json()["choices"][0]["message"]["content"])
-    </pre>
+result = response.json()
 
-    <h2>2. Image Generation Code</h2>
-    <pre>
+print("\n--- Story Generated ---\n")
+print(result["choices"][0]["message"]["content"])
+</code></pre>
+</div>
+
+
+
+<!-- ------------------------------------------------------ -->
+<!-- SECTION 2: IMAGE GENERATION PYTHON CODE -->
+<!-- ------------------------------------------------------ -->
+
+<div class="section">
+<h2>2️⃣ Image Generation (Stability AI - Python)</h2>
+
+<pre><code>
 import requests
 
-url = "https://api.groq.com/openai/v1/images/generations"
-headers = {"Authorization": "Bearer YOUR_API_KEY"}
+API_KEY = "YOUR_STABILITY_API_KEY"
+ENDPOINT = "https://api.stability.ai/v2beta/stable-image/generate/sd3"
 
-data = {"model": "llama-3.2-11b-vision-preview", "prompt": "A cute baby elephant"}
+def generate_image(prompt):
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Accept": "image/*"
+    }
+    files = {
+        "prompt": (None, prompt),
+        "output_format": (None, "png")
+    }
 
-response = requests.post(url, json=data, headers=headers)
-print(response.json())
-    </pre>
+    response = requests.post(ENDPOINT, headers=headers, files=files)
 
-    <h2>3. Text Explanation</h2>
-    <p>This page explains the use of URL, headers, POST, response, JSON, roles, and content in API calls.</p>
+    if response.status_code == 200:
+        with open("output.png", "wb") as f:
+            f.write(response.content)
+        print("Image saved as output.png")
+    else:
+        print("Error:", response.status_code, response.text)
+
+prompt = input("Enter image description: ")
+generate_image(prompt)
+</code></pre>
+</div>
+
+
+
+<!-- ------------------------------------------------------ -->
+<!-- SECTION 3: SIMPLE STREAMLIT STORY GENERATOR -->
+<!-- ------------------------------------------------------ -->
+
+<div class="section">
+<h2>3️⃣ Streamlit Story Generator (Simple)</h2>
+
+<pre><code>
+import requests
+import streamlit as st
+
+st.title('Simple Story Generator')
+prompt = st.text_input('Enter a story idea:')
+
+api_key = "YOUR_GROQ_API_KEY"
+url = "https://api.groq.com/openai/v1/chat/completions"
+
+if st.button('Generate Story'):
+    if prompt.strip() == "":
+        st.warning('Please enter a story idea!')
+    else:
+        data = {
+            "model": "llama-3.1-8b-instant",
+            "messages": [{"role": "user", "content": prompt}]
+        }
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        response = requests.post(url, json=data, headers=headers)
+        result = response.json()
+
+        story = result["choices"][0]["message"]["content"]
+
+        st.subheader('Generated Story')
+        st.write(story)
+</code></pre>
+</div>
+
+
+
+<!-- ------------------------------------------------------ -->
+<!-- SECTION 4: STYLED STREAMLIT STORY GENERATOR -->
+<!-- ------------------------------------------------------ -->
+
+<div class="section">
+<h2>4️⃣ Streamlit Story Generator (Styled Version)</h2>
+
+<pre><code>
+import requests
+import streamlit as st
+
+custom_style = """
+<style>
+[data-testid="stAppViewContainer"] {
+    background-image: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+.title {
+    font-size: 60px; font-weight: bold; text-align: center;
+    color: #f1c40f; text-shadow: 3px 3px 8px #000000;
+}
+.story-box {
+    font-size: 22px; background-color: rgba(255,255,255,0.9);
+    padding: 25px; border-radius: 15px;
+}
+</style>
+"""
+st.markdown(custom_style, unsafe_allow_html=True)
+
+st.markdown("<div class='title'>✨ Simple Story Generator ✨</div>", 
+            unsafe_allow_html=True)
+
+prompt = st.text_input('Enter a story idea:')
+
+api_key = "YOUR_GROQ_API_KEY"
+url = "https://api.groq.com/openai/v1/chat/completions"
+
+if st.button('Generate Story'):
+    if prompt.strip() == "":
+        st.warning('Please enter a story idea!')
+    else:
+        data = {
+            "model": "llama-3.1-8b-instant",
+            "messages": [{"role": "user", "content": prompt}]
+        }
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+
+        response = requests.post(url, json=data, headers=headers)
+        result = response.json()
+
+        if "choices" not in result:
+            st.error(f"API Error: {result}")
+        else:
+            story = result["choices"][0]["message"]["content"]
+            st.markdown(f"<div class='story-box'>{story}</div>", 
+                        unsafe_allow_html=True)
+</code></pre>
+</div>
+
+
+
 </body>
 </html>
