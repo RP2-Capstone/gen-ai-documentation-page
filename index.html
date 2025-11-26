@@ -36,7 +36,6 @@
 <p>This page contains simple, copy-friendly AI code examples for students.</p>
 
 
-
 <!-- ------------------------------------------------------ -->
 <!-- SECTION 1: STORY GENERATION PYTHON CODE -->
 <!-- ------------------------------------------------------ -->
@@ -72,7 +71,6 @@ print("\n--- Story Generated ---\n")
 print(result["choices"][0]["message"]["content"])
 </code></pre>
 </div>
-
 
 
 <!-- ------------------------------------------------------ -->
@@ -111,7 +109,6 @@ prompt = input("Enter image description: ")
 generate_image(prompt)
 </code></pre>
 </div>
-
 
 
 <!-- ------------------------------------------------------ -->
@@ -166,42 +163,30 @@ if st.button('Generate Story'):
 import requests
 import streamlit as st
 
-custom_style = """
-<style>
-[data-testid="stAppViewContainer"] {
-    background-image: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}
-.title {
-    font-size: 60px; font-weight: bold; text-align: center;
-    color: #f1c40f; text-shadow: 3px 3px 8px #000000;
-}
-.story-box {
-    font-size: 22px; background-color: rgba(255,255,255,0.9);
-    padding: 25px; border-radius: 15px;
-}
-</style>
-"""
-st.markdown(custom_style, unsafe_allow_html=True)
+st.title("Styled Story Generator")
 
-st.markdown("<div class='title'>✨ Simple Story Generator ✨</div>", 
-            unsafe_allow_html=True)
+story_styles = [
+    "Fantasy", "Horror", "Romance", 
+    "Adventure", "Sci-Fi", "Kids Story"
+]
 
-prompt = st.text_input('Enter a story idea:')
+idea = st.text_input("Enter a story idea:")
+choice = st.selectbox("Select story style", story_styles)
 
-api_key = "YOUR_GROQ_API_KEY"
+api_key = st.text_input("Enter Groq API Key", type="password")
 url = "https://api.groq.com/openai/v1/chat/completions"
 
-if st.button('Generate Story'):
-    if prompt.strip() == "":
-        st.warning('Please enter a story idea!')
+if st.button("Generate Story"):
+    if idea.strip() == "":
+        st.warning("Please enter a story idea")
     else:
+        prompt = f"Write a {choice} style story based on: {idea}"
+
         data = {
             "model": "llama-3.1-8b-instant",
             "messages": [{"role": "user", "content": prompt}]
         }
+
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"
@@ -209,13 +194,71 @@ if st.button('Generate Story'):
 
         response = requests.post(url, json=data, headers=headers)
         result = response.json()
+        story = result["choices"][0]["message"]["content"]
 
-        if "choices" not in result:
-            st.error(f"API Error: {result}")
-        else:
-            story = result["choices"][0]["message"]["content"]
-            st.markdown(f"<div class='story-box'>{story}</div>", 
-                        unsafe_allow_html=True)
+        st.subheader("Generated Story")
+        st.write(story)
+</code></pre>
+</div>
+
+
+
+
+<!-- ------------------------------------------------------ -->
+<!-- SECTION 5: SKIN ANALYZER STREAMLIT APP -->
+<!-- ------------------------------------------------------ -->
+
+<div class="section">
+<h2>5️⃣ Streamlit – Skin Analyzer (Groq)</h2>
+
+<pre><code>
+import streamlit as st
+import base64
+import requests
+from PIL import Image
+import io
+
+st.title("Skin Analyzer (Groq Free Tier)")
+
+api_key = st.text_input("Enter Groq API Key", type="password")
+uploaded_file = st.file_uploader("Upload your face image", type=["jpg", "jpeg", "png"])
+
+def ultra_compress(image_bytes, max_size=256, quality=20):
+    img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+    img.thumbnail((max_size, max_size))
+    buffer = io.BytesIO()
+    img.save(buffer, format="JPEG", quality=quality)
+    return buffer.getvalue()
+
+if uploaded_file and api_key:
+    compressed = ultra_compress(uploaded_file.read())
+    img_base64 = base64.b64encode(compressed).decode()
+
+    user_msg = (
+        "Analyze my skin.\n"
+        "Image base64 below:\n"
+        f"{img_base64}"
+    )
+
+    payload = {
+        "model": "llama-3.1-8b-instant",
+        "messages": [{"role": "user", "content": user_msg}]
+    }
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        json=payload, headers=headers
+    )
+
+    try:
+        st.write(response.json()["choices"][0]["message"]["content"])
+    except:
+        st.error(response.json())
 </code></pre>
 </div>
 
